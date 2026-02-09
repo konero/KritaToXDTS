@@ -4,3 +4,6 @@ __pycache__/
 
 # IDE / Editor folders
 .vscode/
+
+# Sample data files
+samples/
