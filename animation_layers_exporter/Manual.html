@@ -14,7 +14,7 @@
     
     <p>
         Each animated layer (or group) in your document is exported as a 
-        separate track with individual PNG frames. The exposure sheet timing 
+        separate track with individual image frames. The exposure sheet timing 
         is preserved in the XDTS file, including held frames and cell numbers.
     </p>
     
@@ -42,8 +42,8 @@
     
     <p><strong>Format:</strong> Choose how exported frame files are named:</p>
     <ul>
-        <li><code>Sequence number only</code> — Files named <code>0001.png</code>, <code>0002.png</code>, etc.</li>
-        <li><code>Layer name + sequence</code> — Files named <code>LayerName_0001.png</code>, etc.</li>
+        <li><code>Sequence number only</code> — Files named <code>0001.ext</code></li>
+        <li><code>Layer name + sequence</code> — Files named <code>LayerName_0001.ext</code></li>
     </ul>
     
     <p><strong>Prefix:</strong> Optional text added before the layer name or sequence number.</p>
@@ -54,7 +54,7 @@
     
     <div class="note">
         <strong>Example:</strong> With prefix "shot01", suffix "final", separator "_", 
-        and layer name "Lines", the filename would be: <code>shot01_Lines_final_0001.png</code>
+        and layer name "Lines", the filename would be: <code>shot01_Lines_final_0001.ext</code> (extension depends on chosen image format)
     </div>
     
     <h3>Export Options</h3>
@@ -72,15 +72,12 @@
     guides and excluded from export.</p>
     
     <p><strong>Include non-animated layers:</strong> Export static layers (without 
-    animation keyframes) as single PNG images. Useful for backgrounds, layouts, 
+    animation keyframes) as single images. Useful for backgrounds, layouts, 
     peg bars, or safety margin frames. Static layers are exported directly into the 
     export folder without subfolders.</p>
     
     <p><strong>Use full clip range:</strong> Export the entire animation timeline. 
     When disabled, only the selected playback range (in/out points) is exported.</p>
-    
-    <p><strong>PNG Compression:</strong> Compression level from 0 (no compression) 
-    to 9 (maximum). Higher values produce smaller files but take longer to export.</p>
     
     <h2>Output Structure</h2>
     <p>The exporter creates the following folder structure:</p>
@@ -88,14 +85,14 @@
 chosen_directory/
 └── DocumentName/              # Export folder (named after your document)
     ├── export.xdts            # XDTS timing sheet
-    ├── Background.png         # Static layers (single images, no folder)
-    ├── Safety_Frame.png       # Another static layer
+    ├── Background.ext         # Static layers (single images, no folder)
+    ├── Safety_Frame.ext       # Another static layer
     ├── Character_Body/        # Folder for each animated layer/group
-    │   ├── Character_Body_0001.png
-    │   ├── Character_Body_0002.png
+    │   ├── Character_Body_0001.ext
+    │   ├── Character_Body_0002.ext
     │   └── ...
     ├── Character_Face/
-    │   ├── Character_Face_0001.png
+    │   ├── Character_Face_0001.ext
     │   └── ...
     └── ...</pre>
     
@@ -139,7 +136,7 @@ chosen_directory/
         The exporter automatically detects frames with identical pixel content 
         and exports them only once. The XDTS timing sheet references the same 
         cell number for duplicate frames. For example a cloned keyframe will not 
-        create a new PNG file. Also known as "exposure" in traditional animation.
+        create a new image file. Also known as "exposure" in traditional animation.
     </p>
     
     <h2>Importing into Other Software</h2>
@@ -147,7 +144,7 @@ chosen_directory/
         XDTS is supported by many animation applications including OpenToonz, 
         Toei Digital Exposure Sheet, Clip Studio Paint, and others. Import the <code>.xdts</code>
         file through the application's import menu. The tracks and their timing will be 
-        imported automatically along with the PNG image sequences.
+        imported automatically along with the image sequences.
     </p>
     
     <h2>Troubleshooting</h2>
@@ -164,7 +161,7 @@ chosen_directory/
     <h2>Technical Details</h2>
     <ul>
         <li><strong>XDTS Version:</strong> 5</li>
-        <li><strong>Image Format:</strong> PNG with alpha channel (RGBA)</li>
+        <li><strong>Image Format:</strong> PNG, TGA</li>
         <li><strong>Frame Numbering:</strong> 1-based, 4-digit padding (0001, 0002, ...)</li>
         <li><strong>Color Profile:</strong> Preserved from source document</li>
     </ul>
