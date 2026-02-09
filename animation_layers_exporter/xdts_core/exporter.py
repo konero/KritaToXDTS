@@ -1,6 +1,6 @@
 """XDTS Export Engine
 
-Main export logic for converting Krita animations to XDTS format with PNG frames.
+Main export logic for converting Krita animations to XDTS format with image frames.
 """
 
 import os
@@ -23,8 +23,8 @@ class ExportOptions:
     """Configuration options for XDTS export."""
     
     # File format constants
-    FORMAT_SEQ_ONLY = 0       # 0001.png
-    FORMAT_LAYER_SEQ = 1      # LayerName_0001.png
+    FORMAT_SEQ_ONLY = 0       # 0001.ext
+    FORMAT_LAYER_SEQ = 1      # LayerName_0001.ext
     
     def __init__(self):
         self.include_invisible = False
@@ -40,6 +40,7 @@ class ExportOptions:
         self.file_suffix = ""
         self.file_separator = "_"
         self.export_name = ""
+        self.image_format = "png"
         
     @classmethod
     def from_dict(cls, data: dict):
@@ -56,6 +57,7 @@ class ExportOptions:
         opts.file_suffix = data.get('file_suffix', "")
         opts.file_separator = data.get('file_separator', "_")
         opts.export_name = data.get('export_name', "")
+        opts.image_format = data.get('image_format', "png")
         return opts
 
 
@@ -80,7 +82,7 @@ class ExportResult:
 class XDTSExportEngine:
     """Core export engine for XDTS animation export.
     
-    Converts Krita animation documents to XDTS format with PNG frame sequences.
+    Converts Krita animation documents to XDTS format with image sequences.
     """
     
     def __init__(self, document, export_path: str, options=None):
@@ -270,8 +272,8 @@ class XDTSExportEngine:
                 f"Exporting static layer {layer_name}..."
             )
             
-            # Export as single PNG directly in export folder (no subfolder)
-            filename = f"{layer_name}.png"
+            # Export as single image directly in export folder (no subfolder)
+            filename = f"{layer_name}.{self.options.image_format}"
             filepath = os.path.join(self.export_path, filename)
             
             # Use first frame for static layers
@@ -330,7 +332,7 @@ class XDTSExportEngine:
         # Add sequence number
         parts.append(seq)
         
-        return sep.join(parts) + ".png"
+        return sep.join(parts) + f".{self.options.image_format}"
     
     def _process_frame(self, frame_exporter, layer, frame: int,
                        layer_name: str, layer_folder: str,

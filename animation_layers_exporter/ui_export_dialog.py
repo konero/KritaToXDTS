@@ -20,8 +20,8 @@ from .xdts_core.utils import sanitize_filename
 
 
 # File naming format options
-FILE_FORMAT_SEQ_ONLY = 0       # 0001.png
-FILE_FORMAT_LAYER_SEQ = 1      # LayerName_0001.png
+FILE_FORMAT_SEQ_ONLY = 0       # 0001 (extension follows chosen image format)
+FILE_FORMAT_LAYER_SEQ = 1      # LayerName_0001 (extension follows chosen image format)
 
 # Settings keys
 SETTINGS_EXPORT_PATH = "export_path"
@@ -110,8 +110,8 @@ class XDTSExportDialog(QDialog):
         # Header description
         header_label = QLabel(
             "<b>Export Animation Layers (XDTS)</b><br>"
-            "Exports animated layers and groups as PNG image sequences with "
-            "timing data saved in the Toei Digital Exposure Sheet (.xdts) format."
+            "Exports animated layers and groups as image sequences with timing " \
+            "data saved in the Toei Digital Exposure Sheet (.xdts) format."
         )
         header_label.setWordWrap(True)
         layout.addWidget(header_label)
@@ -154,8 +154,8 @@ class XDTSExportDialog(QDialog):
         
         # Format dropdown
         self._format_combo = QComboBox()
-        self._format_combo.addItem("Sequence number only (0001.png)", FILE_FORMAT_SEQ_ONLY)
-        self._format_combo.addItem("Layer name + sequence (Layer_0001.png)", FILE_FORMAT_LAYER_SEQ)
+        self._format_combo.addItem("Sequence number only (0001.ext)", FILE_FORMAT_SEQ_ONLY)
+        self._format_combo.addItem("Layer name + sequence (Layer_0001.ext)", FILE_FORMAT_LAYER_SEQ)
         self._format_combo.setCurrentIndex(FILE_FORMAT_LAYER_SEQ)
         self._format_combo.setToolTip("Choose how exported frame files are named.")
         naming_layout.addRow("Format:", self._format_combo)
@@ -231,15 +231,13 @@ class XDTSExportDialog(QDialog):
         )
         options_layout.addRow(self._full_range_checkbox)
         
-        # PNG compression
-        self._compression_spinbox = QSpinBox()
-        self._compression_spinbox.setRange(0, 9)
-        self._compression_spinbox.setValue(DEFAULT_PNG_COMPRESSION)
-        self._compression_spinbox.setToolTip(
-            "PNG compression level (0=none, 9=maximum).\n"
-            "Higher values produce smaller files but take longer to export."
-        )
-        options_layout.addRow("PNG Compression:", self._compression_spinbox)
+        # Image format selection
+        self._image_format_combo = QComboBox()
+        self._image_format_combo.addItem("PNG (.png)", "png")
+        self._image_format_combo.addItem("Targa (.tga)", "tga")
+        self._image_format_combo.setCurrentIndex(0)
+        self._image_format_combo.setToolTip("Choose image file format for exported frames.")
+        options_layout.addRow("Image format:", self._image_format_combo)
         
         options_group.setLayout(options_layout)
         layout.addWidget(options_group)
@@ -331,7 +329,8 @@ class XDTSExportDialog(QDialog):
         options.include_reference = self._reference_checkbox.isChecked()
         options.include_static = self._static_checkbox.isChecked()
         options.flatten_groups = self._flatten_groups_checkbox.isChecked()
-        options.png_compression = self._compression_spinbox.value()
+        options.png_compression = DEFAULT_PNG_COMPRESSION
+        options.image_format = self._image_format_combo.currentData()
         options.use_full_clip_range = self._full_range_checkbox.isChecked()
         
         # File naming options

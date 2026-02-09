@@ -1,10 +1,12 @@
 """Frame Export Handler
 
-Handles the export of individual animation frames to PNG files.
+Handles the export of individual animation frames to image files.
 Uses Krita's native document export.
 """
 
+import os
 import krita
+from ..config import DEFAULT_PNG_COMPRESSION
 
 
 class FrameExporter:
@@ -33,7 +35,7 @@ class FrameExporter:
         self._resolution = source_document.resolution()
     
     def export_frame(self, layer, frame_number: int, output_path: str) -> bool:
-        """Export a single frame from a layer to a PNG file.
+        """Export a single frame from a layer to a image file.
         
         Creates a temporary document matching the source document's properties,
         transfers the pixel data, and exports using Krita's native export.
@@ -41,7 +43,7 @@ class FrameExporter:
         Args:
             layer: The Krita layer node to export from.
             frame_number: Which frame to export.
-            output_path: Full path for the output PNG file.
+            output_path: Full path for the output image file.
             
         Returns:
             True if export succeeded, False otherwise.
@@ -68,8 +70,15 @@ class FrameExporter:
             # Transfer pixels to temp document
             self._transfer_pixels(temp_doc, pixel_data)
             
-            # Export using Krita's native PNG export
-            export_config = self._build_png_config()
+            # Choose export config based on requested extension
+            _, ext = os.path.splitext(output_path)
+            ext = ext.lower()
+            if ext == '.tga':
+                export_config = self._build_tga_config()
+            else:
+                # Default to PNG settings
+                export_config = self._build_png_config()
+
             success = temp_doc.exportImage(output_path, export_config)
             
             return success
@@ -117,11 +126,21 @@ class FrameExporter:
         """Build PNG export configuration.
         
         Returns:
-            InfoObject configured for PNG export with alpha.
+            InfoObject configured for PNG export.
         """
         config = krita.InfoObject()
         config.setProperty("alpha", True)
-        config.setProperty("compression", 6)
+        config.setProperty("compression", DEFAULT_PNG_COMPRESSION)
         config.setProperty("indexed", False)
         config.setProperty("interlaced", False)
+        return config
+
+    def _build_tga_config(self) -> 'InfoObject':
+        """Build TGA export configuration.
+
+        Returns:
+            InfoObject configured for TGA export.
+        """
+        config = krita.InfoObject()
+        config.setProperty("alpha", True)
         return config
