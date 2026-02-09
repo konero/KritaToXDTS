@@ -3,7 +3,7 @@
 Version and constants for the Animation Layers Exporter plugin.
 """
 
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 PLUGIN_ID = "animation_layers_exporter"
 PLUGIN_NAME = "Export Animation Layers (XDTS)"
 
